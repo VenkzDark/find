@@ -125,6 +125,33 @@ async def cmd_dns(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     except Exception as e:
         await update.message.reply_text(f"⚠️ Error DNS: `{str(e)[:50]}`", parse_mode="Markdown")
+        
+    dominio = context.args.strip().lower().replace("https://", "").replace("http://", "").split("/")
+    tipos = ["A", "AAAA", "MX", "NS", "TXT"]
+    resultados = []
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            for tipo in tipos:
+                api_url = f"https://dns.google{dominio}&type={tipo}"
+                async with session.get(api_url, timeout=6) as resp:
+                    data = await resp.json()
+                    ans = data.get("Answer", [])
+                    if ans:
+                        valores = ", ".join([a.get("data", "") for a in ans[:3]])
+                        resultados.append(f"• **{tipo}:** `{valores}`")
+
+        if not resultados:
+            await update.message.reply_text(f"❌ No se encontraron registros DNS para `{dominio}`.", parse_mode="Markdown")
+            return
+
+        cuerpo = "\n".join(resultados)
+        await update.message.reply_text(
+            f"🔍 **REGISTROS DNS • {dominio}**\n━━━━━━━━━━━━━━━━━━━━\n{cuerpo}",
+            parse_mode="Markdown"
+        )
+    except Exception as e:
+        await update.message.reply_text(f"⚠️ Error DNS: `{str(e)[:50]}`", parse_mode="Markdown")
 
   async def cmd_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not tiene_acceso(update.effective_user.id):
