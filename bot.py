@@ -150,11 +150,12 @@ async def cmd_dns(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"🔍 **REGISTROS DNS • {dominio}**\n━━━━━━━━━━━━━━━━━━━━\n{cuerpo}",
             parse_mode="Markdown"
         )
-    except Exception as e:
+        except Exception as e:
         await update.message.reply_text(f"⚠️ Error DNS: `{str(e)[:50]}`", parse_mode="Markdown")
 
+
   async def cmd_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not tiene_acceso(update.effective_user.id):
+      if not tiene_acceso(update.effective_user.id):
         return
     if not context.args:
         await update.message.reply_text("ℹ️ Uso: `/url https://bit.ly`", parse_mode="Markdown")
