@@ -138,8 +138,7 @@ async def cmd_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(texto, parse_mode="Markdown", disable_web_page_preview=True)
     except Exception as e:
         await update.message.reply_text(f"⚠️ Error rastreando enlace: `{str(e)[:50]}`", parse_mode="Markdown")
-
-     async def cmd_qr(update: Update, context: ContextTypes.DEFAULT_TYPE):
+ async def cmd_qr(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not tiene_acceso(update.effective_user.id):
         return
     if not context.args:
